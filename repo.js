@@ -3,7 +3,7 @@
 function load_data(id){
     core_mode = 1;
     frame_counter = 0;
-    frames_per_obstacle = core_storage_data['obstacle-frequency'];
+    frames_per_obstacle = Math.floor(core_storage_data['obstacle-frequency']);
     half_corridor_height = core_storage_data['corridor-height'] / 2;
     obstacle_counter = 0;
 
@@ -57,7 +57,8 @@ function repo_drawlogic(){
     );
 
     if(core_mode === 1
-      && core_keys[core_storage_data['jump']]['state']){
+      && (core_keys[core_storage_data['jump']]['state']
+        || core_mouse['down-0'])){
         canvas_setproperties({
           'fillStyle': '#f00',
         });
@@ -163,11 +164,12 @@ function repo_logic(){
 
     if(core_storage_data['obstacle-frequency'] > 0
       && frames_per_obstacle > 1
-      && frame_counter % core_storage_data['obstacle-increase'] === 0){
+      && frame_counter % Math.floor(core_storage_data['obstacle-increase']) === 0){
         frames_per_obstacle -= 1;
     }
 
-    if(core_keys[core_storage_data['jump']]['state']){
+    if(core_keys[core_storage_data['jump']]['state']
+      || core_mouse['down-0']){
         entity_entities['player']['speed'] += core_storage_data['jetpack-power'];
         entity_create({
           'properties': {
@@ -269,8 +271,8 @@ function repo_init(){
         + '<tr><td><input class=mini id=gravity step=any type=number><td>Gravity'
         + '<tr><td><input class=mini id=jetpack-power step=any type=number><td>Jetpack Power'
         + '<tr><td><input class=mini id=speed step=any type=number><td>Jetpack Speed'
-        + '<tr><td><input class=mini id=obstacle-frequency min=1 step=any type=number><td>Obstacle Frequency'
-        + '<tr><td><input class=mini id=obstacle-increase min=1 step=any type=number><td>Obstacle Increase</table>',
+        + '<tr><td><input class=mini id=obstacle-frequency min=1 step=1 type=number><td>Obstacle Frequency'
+        + '<tr><td><input class=mini id=obstacle-increase min=1 step=1 type=number><td>Obstacle Increase</table>',
       'title': 'Jetpack-2D.htm',
       'ui': 'Score: <span id=score></span>',
     });
